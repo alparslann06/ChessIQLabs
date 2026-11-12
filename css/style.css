@@ -44,9 +44,9 @@
   --page-max-width: 1200px;
   --section-gap: 96px;
 
-  /* Board squares */
-  --sq-light: #c8ccc4;
-  --sq-dark: #4c5450;
+  /* Board squares — chess.com-style green board */
+  --sq-light: #ebecd0;
+  --sq-dark: #739552;
 }
 
 /* ---------- Reset / Base ---------- */
@@ -766,16 +766,16 @@ textarea.input { resize: vertical; min-height: 120px; }
 }
 .sq .coord {
   position: absolute;
-  font-size: 8.5cqw;
+  font-size: 4cqw;
   font-weight: 510;
   font-family: var(--font-sans);
-  opacity: .8;
+  opacity: .85;
   pointer-events: none;
 }
-.sq .coord.file { bottom: 2%; right: 5%; }
+.sq .coord.file { bottom: 3%; right: 5%; }
 .sq .coord.rank { top: 3%; left: 5%; }
-.sq.light .coord { color: var(--sq-dark); }
-.sq.dark .coord { color: var(--sq-light); }
+.sq.light .coord { color: #5c6b52; }
+.sq.dark .coord { color: #ebecd0; }
 
 .piece {
   font-size: 10.5cqw;
@@ -785,6 +785,14 @@ textarea.input { resize: vertical; min-height: 120px; }
   transition: transform .15s ease;
   font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", var(--font-sans);
 }
+.piece-img {
+  width: 78%;
+  height: 78%;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  transition: transform .15s ease;
+}
 .piece.white {
   color: #fafaf7;
   text-shadow: 0 1px 0 #3a3f3b, 0 0 2px rgba(0,0,0,.65), 0 0 4px rgba(0,0,0,.3);
@@ -793,7 +801,7 @@ textarea.input { resize: vertical; min-height: 120px; }
   color: #17191b;
   text-shadow: 0 0 2px rgba(230,235,230,.35), 0 0 4px rgba(230,235,230,.18);
 }
-.sq.sel .piece { transform: scale(1.08); }
+.sq.sel .piece, .sq.sel .piece-img { transform: scale(1.08); }
 
 .board-legend {
   display: flex;

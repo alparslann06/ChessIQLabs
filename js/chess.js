@@ -10,8 +10,12 @@
 
   const FILES = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-  /* Unicode glyph set — one glyph per piece type, colored via CSS */
+  /* Unicode glyph set — one glyph per piece type, colored via CSS (fallback) */
   const GLYPHS = { k: "\u265A", q: "\u265B", r: "\u265C", b: "\u265D", n: "\u265E", p: "\u265F" };
+
+  /* Vector piece set (cburnett, the classic chess-piece SVGs) served via
+     jsDelivr. If images fail to load (offline), we fall back to glyphs. */
+  const PIECE_IMG_BASE = "https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/";
 
   /* Parse the board part of a FEN into a flat 64-array.
      Index 0 = a8, index 7 = h8, index 63 = h1 (row-major, white orientation).
@@ -80,12 +84,21 @@
         const sq = squares[i];
         const piece = currentBoard ? currentBoard[i] : null;
         // keep coordinate labels
-        sq.querySelectorAll(".piece").forEach((p) => p.remove());
+        sq.querySelectorAll(".piece, .piece-img").forEach((p) => p.remove());
         if (piece) {
-          const span = document.createElement("span");
-          span.className = "piece " + (piece.color === "w" ? "white" : "black");
-          span.textContent = GLYPHS[piece.type];
-          sq.appendChild(span);
+          const img = document.createElement("img");
+          img.className = "piece-img";
+          img.alt = "";
+          img.draggable = false;
+          img.src = PIECE_IMG_BASE + piece.color + piece.type.toUpperCase() + ".svg";
+          img.onerror = function () {
+            // Offline fallback: Unicode glyph colored via CSS
+            const span = document.createElement("span");
+            span.className = "piece " + (piece.color === "w" ? "white" : "black");
+            span.textContent = GLYPHS[piece.type];
+            img.replaceWith(span);
+          };
+          sq.appendChild(img);
         }
         const name = sq.dataset.square;
         sq.classList.toggle("sel", marks.sel === name);

@@ -66,7 +66,7 @@ Dark **"midnight precision"** aesthetic (inspired by Linear-style design):
 
 ## ♟ Chess features (all vanilla JS)
 
-- `js/chess.js` renders any FEN into an 8×8 grid (Unicode pieces, coordinates, selection/target/highlight states)
+- `js/chess.js` renders any FEN into an 8×8 grid (chess.com-style green board, vector piece SVGs with offline Unicode fallback, coordinates, selection/target/highlight states)
 - Puzzle trainer validates moves against scripted solution trees, auto-plays opponent replies, shakes on wrong answers
 - Analysis page steps through key FEN snapshots with grades (Brilliant → Blunder) and eval readout
 
