@@ -710,6 +710,7 @@ textarea.input { resize: vertical; min-height: 120px; }
   width: 100%;
 }
 .board {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
@@ -780,20 +781,33 @@ textarea.input { resize: vertical; min-height: 120px; }
 
 .piece {
   font-size: 40px;      /* fallback for browsers without container queries */
-  font-size: 10.5cqw;
+  font-size: 10.5cqw;   /* fallback glyph sizing */
   line-height: 1;
-  z-index: 2;
   pointer-events: none;
-  transition: transform .15s ease;
   font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", var(--font-sans);
 }
-.piece-img {
-  width: 78%;
-  height: 78%;
-  z-index: 2;
+
+/* Animated piece layer — pieces live on the board, not in squares,
+   so transforms slide them smoothly between positions */
+.bpiece {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 12.5%;
+  display: grid;
+  place-items: center;
   pointer-events: none;
+  z-index: 3;
+  transition: transform .24s cubic-bezier(.25, .9, .35, 1), opacity .2s ease;
+  will-change: transform;
+}
+.bpiece.enter { opacity: 0; transition: transform .24s cubic-bezier(.25,.9,.35,1), opacity .25s ease; }
+.bpiece.exit  { opacity: 0; }
+.bpiece .piece-img {
+  width: 88%;
+  height: 88%;
   user-select: none;
-  transition: transform .15s ease;
 }
 .piece.white {
   color: #fafaf7;
@@ -803,7 +817,6 @@ textarea.input { resize: vertical; min-height: 120px; }
   color: #17191b;
   text-shadow: 0 0 2px rgba(230,235,230,.35), 0 0 4px rgba(230,235,230,.18);
 }
-.sq.sel .piece, .sq.sel .piece-img { transform: scale(1.08); }
 
 .board-legend {
   display: flex;
@@ -883,6 +896,30 @@ textarea.input { resize: vertical; min-height: 120px; }
 .g-ok { background: var(--color-fog); }
 .g-mistake { background: #e2a33d; }
 .g-blunder { background: var(--color-coral-red); }
+
+/* Chess.com-style move grade badges */
+.mv-badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.mv-badge.b-brilliant { background: #26c2a3; }   /* teal "!!"  */
+.mv-badge.b-good     { background: #81b64c; }    /* green "✓"  */
+.mv-badge.b-ok       { background: #9cab8e; }    /* sage  "✓"  */
+.mv-badge.b-book     { background: #a88865; }    /* brown book */
+.mv-badge.b-mistake  { background: #e8a33d; }    /* orange "?" */
+.mv-badge.b-blunder  { background: #d9534f; }    /* red "??"   */
+.mv-badge.b-mate     { background: #f0f0f0; color: #111; } /* white "#" */
+.mv-badge.lg { width: 24px; height: 24px; font-size: 12px; }
 
 .analysis-controls {
   display: flex;

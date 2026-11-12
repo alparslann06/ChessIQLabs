@@ -89,7 +89,7 @@
 
         <div class="moves-panel reveal" style="--reveal-delay:.08s">
           <div class="moves-head">
-            <span class="mono">KEY POSITIONS · 8</span>
+            <span class="mono">ALL 34 MOVES · GRADED</span>
             <span class="badge badge-lime">demo game</span>
           </div>
           <div class="moves-list" id="moves-list"></div>
@@ -101,7 +101,7 @@
           </div>
           <div class="note-card">
             <span class="n-move" id="note-move">—</span>
-            <p id="note-text">Press "Load demo", then step through the moves — or click any key position in the list.</p>
+            <p id="note-text">Step through with the arrow keys, click any move — or press "Load demo" and watch the pieces glide.</p>
             <div class="eval-line">
               <span>MOVE GRADE</span>
               <strong id="note-grade">—</strong>
@@ -130,18 +130,8 @@
         </div>
         <div class="reveal" style="--reveal-delay:.1s">
           <div class="eval-graph">
-            <div class="eg-head"><span>EVALUATION — KEY POSITIONS</span><span>WHITE ↑</span></div>
-            <div class="eval-bars" id="live-eval-bars">
-              <div class="eval-bar" style="height:50%" title="Start: even"></div>
-              <div class="eval-bar" style="height:53%" title="3...Bg4"></div>
-              <div class="eval-bar" style="height:56%" title="5...dxe5"></div>
-              <div class="eval-bar" style="height:62%" title="7.Qb3!"></div>
-              <div class="eval-bar blunder" style="height:30%" title="9...b5?"></div>
-              <div class="eval-bar hot" style="height:80%" title="11...Nbd7"></div>
-              <div class="eval-bar hot" style="height:88%" title="13...Rxd7"></div>
-              <div class="eval-bar hot" style="height:94%" title="15...Nxd7"></div>
-              <div class="eval-bar hot" style="height:100%" title="17.Rd8#"></div>
-            </div>
+            <div class="eg-head"><span>EVALUATION — ALL 34 MOVES</span><span>WHITE ↑</span></div>
+            <div class="eval-bars" id="live-eval-bars"></div>
             <div class="eval-line">
               <span>FINAL ACCURACY</span>
               <strong>White 97.1% · Black 63.4%</strong>
