@@ -13,9 +13,10 @@
   /* Unicode glyph set — one glyph per piece type, colored via CSS (fallback) */
   const GLYPHS = { k: "\u265A", q: "\u265B", r: "\u265C", b: "\u265D", n: "\u265E", p: "\u265F" };
 
-  /* Vector piece set (cburnett, the classic chess-piece SVGs) served via
-     jsDelivr. If images fail to load (offline), we fall back to glyphs. */
-  const PIECE_IMG_BASE = "https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/";
+  /* Vector piece set: chess.com's "neo" pieces (the rounded set from the
+     reference screenshot), served from chess.com's CDN. PNGs at 150px scale.
+     If images fail to load (offline), we fall back to Unicode glyphs. */
+  const PIECE_IMG_BASE = "https://images.chesscomfiles.com/chess-themes/pieces/neo/150/";
 
   /* Parse the board part of a FEN into a flat 64-array.
      Index 0 = a8, index 7 = h8, index 63 = h1 (row-major, white orientation).
@@ -90,7 +91,7 @@
           img.className = "piece-img";
           img.alt = "";
           img.draggable = false;
-          img.src = PIECE_IMG_BASE + piece.color + piece.type.toUpperCase() + ".svg";
+          img.src = PIECE_IMG_BASE + piece.color + piece.type + ".png";
           img.onerror = function () {
             // Offline fallback: Unicode glyph colored via CSS
             const span = document.createElement("span");

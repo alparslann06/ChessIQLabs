@@ -766,18 +766,20 @@ textarea.input { resize: vertical; min-height: 120px; }
 }
 .sq .coord {
   position: absolute;
-  font-size: 4cqw;
+  font-size: 10px;      /* fallback for browsers without container queries */
+  font-size: 2.8cqw;    /* ~10px on a 380px board — chess.com label size */
   font-weight: 510;
   font-family: var(--font-sans);
-  opacity: .85;
+  opacity: .9;
   pointer-events: none;
 }
 .sq .coord.file { bottom: 3%; right: 5%; }
 .sq .coord.rank { top: 3%; left: 5%; }
-.sq.light .coord { color: #5c6b52; }
+.sq.light .coord { color: #739552; }
 .sq.dark .coord { color: #ebecd0; }
 
 .piece {
+  font-size: 40px;      /* fallback for browsers without container queries */
   font-size: 10.5cqw;
   line-height: 1;
   z-index: 2;
