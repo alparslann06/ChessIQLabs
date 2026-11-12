@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChessIQLabs — Free Chess Analysis, Puzzles & Training</title>
+  <meta name="description" content="ChessIQLabs grades every move, builds your daily improvement plan, and serves engine-quality puzzles — free and unlimited." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e4f222'/><text x='50' y='72' font-size='58' text-anchor='middle'>♞</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="home">
+
+  <!-- ======= NAV ======= -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-glyph">♞</span>ChessIQLabs</a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="analysis.html">Analysis</a>
+        <a href="puzzles.html">Puzzles</a>
+        <a href="training.html">Training</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="nav-spacer"></div>
+      <div class="nav-cta">
+        <a href="#" class="signin" data-signin>Sign in</a>
+        <a href="analysis.html" class="btn btn-white">Get started</a>
+      </div>
+      <button class="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-menu">
+    <a href="index.html" class="active">Home</a>
+    <a href="analysis.html">Analysis</a>
+    <a href="puzzles.html">Puzzles</a>
+    <a href="training.html">Training</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="analysis.html" class="btn btn-lime">Start analyzing — free</a>
+  </div>
+
+  <main>
+    <!-- ======= HERO ======= -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="badge badge-lime">● Free &amp; unlimited — no account needed</span>
+          <h1 class="h-hero">Know exactly why you lost that game.</h1>
+          <p class="lead">ChessIQLabs reviews your games move by move, builds a daily plan from your mistakes, and drills the exact positions that keep costing you rating.</p>
+          <div class="hero-actions">
+            <a href="analysis.html" class="btn btn-lime btn-lg">Analyze a game free <span class="arrow">→</span></a>
+            <a href="puzzles.html" class="btn btn-ghost btn-lg">Solve today's puzzle</a>
+          </div>
+          <div class="hero-meta mono">
+            <span><span class="tick">✓</span> Engine-grade review</span>
+            <span><span class="tick">✓</span> 40,000+ puzzles</span>
+            <span><span class="tick">✓</span> Runs in your browser</span>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="board-frame">
+            <div class="frame-head">
+              <div class="dot-row"><i></i><i></i><i></i></div>
+              <span class="mono">review · move 22</span>
+            </div>
+            <div class="board-wrap">
+              <div class="board" data-fen="r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 1"></div>
+            </div>
+            <div class="board-legend"><span>italian_game.pgn</span><span>accuracy 91.4%</span></div>
+          </div>
+          <div class="float-chip chip-1">
+            <span class="fc-ico">♜</span>
+            <span><span class="fc-label">Blunder caught</span><span class="fc-value">Move 22 · Qd5?</span></span>
+          </div>
+          <div class="float-chip chip-2">
+            <span class="fc-ico alt">▲</span>
+            <span><span class="fc-label">Eval swing</span><span class="fc-value">−0.4 → +3.8</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= TRUST STRIP ======= -->
+    <div class="container">
+      <div class="trust-row">
+        <span>PGN import</span>
+        <span>Move-by-move grades</span>
+        <span>Tactics trainer</span>
+        <span>Opening drills</span>
+        <span>Blunder shield</span>
+        <span>Daily plan</span>
+      </div>
+    </div>
+
+    <!-- ======= FEATURE CARDS ======= -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">The toolkit</span>
+          <h2 class="h-section">Three tools, one loop: play, review, improve.</h2>
+          <p class="lead">Most players grind games without reviewing them. ChessIQLabs closes the loop between your games and your study time.</p>
+        </div>
+        <div class="grid-3">
+          <div class="card reveal" style="--reveal-delay:.0s">
+            <div class="card-icon">♟</div>
+            <h3 class="h-card">Game Analysis</h3>
+            <p>Paste a PGN or import from your online games. Every move is graded from Brilliant to Blunder with an evaluation graph of the whole game.</p>
+            <a href="analysis.html" class="card-link">Try the analyzer <span class="arrow">→</span></a>
+          </div>
+          <div class="card feature-lime reveal" style="--reveal-delay:.08s">
+            <div class="card-icon">♞</div>
+            <h3 class="h-card">Tactics Puzzles</h3>
+            <p>Mate-in-two classics to sharp knight forks, sorted by theme and difficulty. Streaks and ratings included — solving is free, forever.</p>
+            <a href="puzzles.html" class="card-link">Start solving <span class="arrow">→</span></a>
+          </div>
+          <div class="card reveal" style="--reveal-delay:.16s">
+            <div class="card-icon">♜</div>
+            <h3 class="h-card">Improvement Plans</h3>
+            <p>A structured training plan built around your biggest leaks: Woodpecker repetitions, blunder checklists, and 20-minute daily sessions.</p>
+            <a href="training.html" class="card-link">See the method <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= HOW IT WORKS ======= -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">How it works</span>
+          <h2 class="h-section">From raw game to training plan in three steps.</h2>
+        </div>
+        <div class="steps">
+          <div class="step reveal">
+            <span class="step-num">STEP 01</span>
+            <h3>Import your game</h3>
+            <p>Paste a PGN, load a FEN, or enter your username to pull recent games. Bullet to classical — every time control is welcome.</p>
+          </div>
+          <div class="step reveal" style="--reveal-delay:.1s">
+            <span class="step-num">STEP 02</span>
+            <h3>Review the report</h3>
+            <p>Each move gets a quality grade. The eval graph shows where the game turned, and the report names your single biggest mistake.</p>
+          </div>
+          <div class="step reveal" style="--reveal-delay:.2s">
+            <span class="step-num">STEP 03</span>
+            <h3>Train the fix</h3>
+            <p>Your report links straight to puzzles and drills that target the exact pattern you missed — so review time becomes rating.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= SPLIT FEATURE: EVERY MOVE GRADED ======= -->
+    <section class="section">
+      <div class="container split">
+        <div class="split-copy reveal">
+          <span class="eyebrow">Game review</span>
+          <h2 class="h-section">Every move, graded. Every swing, explained.</h2>
+          <p>Brilliant, Best, Good, Inaccuracy, Mistake, Blunder — each move is scored by how much it changed your winning chances.</p>
+          <p>The evaluation graph plots the whole game so you can jump straight to the moment it slipped away, and step through the engine's best line from there.</p>
+          <ul class="check-list">
+            <li>Accuracy score per player and per phase</li>
+            <li>Opening identification with theory depth</li>
+            <li>One-click jump to any turning point</li>
+          </ul>
+        </div>
+        <div class="reveal" style="--reveal-delay:.1s">
+          <div class="eval-graph">
+            <div class="eg-head"><span>EVALUATION — GAME 128</span><span>WHITE ADVANTAGE ↑</span></div>
+            <div class="eval-bars">
+              <div class="eval-bar" style="height:52%"></div>
+              <div class="eval-bar" style="height:48%"></div>
+              <div class="eval-bar" style="height:55%"></div>
+              <div class="eval-bar" style="height:44%"></div>
+              <div class="eval-bar" style="height:50%"></div>
+              <div class="eval-bar blunder" style="height:26%"></div>
+              <div class="eval-bar" style="height:38%"></div>
+              <div class="eval-bar" style="height:46%"></div>
+              <div class="eval-bar blunder" style="height:12%"></div>
+              <div class="eval-bar hot" style="height:78%"></div>
+              <div class="eval-bar hot" style="height:86%"></div>
+              <div class="eval-bar hot" style="height:92%"></div>
+              <div class="eval-bar hot" style="height:97%"></div>
+            </div>
+            <div class="eval-line" style="border:0; padding:0; margin-top:14px">
+              <span>move 18 · <strong>Qd5??</strong></span>
+              <span class="badge badge-red">blunder −2.1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= STATS ======= -->
+    <section class="section-sm">
+      <div class="container">
+        <div class="stats reveal">
+          <div class="stat"><div class="stat-num"><span data-count="2.4" data-suffix="M">0</span></div><div class="stat-label">Games reviewed</div></div>
+          <div class="stat"><div class="stat-num"><span data-count="40">0</span><em>K+</em></div><div class="stat-label">Curated puzzles</div></div>
+          <div class="stat"><div class="stat-num"><span data-count="128">0</span></div><div class="stat-label">Avg. rating gain reported</div></div>
+          <div class="stat"><div class="stat-num"><span data-count="0">0</span><em>$</em></div><div class="stat-label">Cost of the free tier</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= QUOTES ======= -->
+    <section class="section" style="padding-top:48px">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">From the community</span>
+          <h2 class="h-section">Players who stopped guessing.</h2>
+        </div>
+        <div class="quotes">
+          <div class="card quote reveal">
+            <div class="badge badge-lime">+84 Elo in 3 months</div>
+            <blockquote>"The blunder pattern report was humbling — 60% of my losses came from two recurring mistakes. Fixing those was worth more than any opening book."</blockquote>
+            <div class="q-author">
+              <span class="q-avatar">M</span>
+              <span><span class="qa-name">Marta K.</span><br /><span class="qa-meta">1500 → 1584 · Rapid</span></span>
+            </div>
+          </div>
+          <div class="card quote reveal" style="--reveal-delay:.08s">
+            <div class="badge badge-teal">Daily solver · 214 day streak</div>
+            <blockquote>"Ten minutes of puzzles before bed, picked from my actual game leaks. It's the first training plan I've ever actually kept."</blockquote>
+            <div class="q-author">
+              <span class="q-avatar">J</span>
+              <span><span class="qa-name">Jonas W.</span><br /><span class="qa-meta">1720 · Blitz</span></span>
+            </div>
+          </div>
+          <div class="card quote reveal" style="--reveal-delay:.16s">
+            <div class="badge badge-violet">Club player</div>
+            <blockquote>"Full game review, every game, no daily limit — I genuinely don't understand how this is free. The move grades are scarily accurate."</blockquote>
+            <div class="q-author">
+              <span class="q-avatar">A</span>
+              <span><span class="qa-name">Aisha R.</span><br /><span class="qa-meta">1885 · Classical</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= FAQ ======= -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">FAQ</span>
+          <h2 class="h-sub">Questions, answered.</h2>
+        </div>
+        <div class="faq reveal">
+          <div class="faq-item">
+            <button class="faq-q">Is ChessIQLabs really free? <span class="chev">+</span></button>
+            <div class="faq-a"><p>Yes. Game review, puzzles, and the training plans are free and unlimited. A Pro tier exists for players who want deep coaching reports and curated courses, but nothing essential is locked.</p></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">How are moves graded? <span class="chev">+</span></button>
+            <div class="faq-a"><p>Each position is evaluated before and after your move. The change in your winning probability maps to a grade — from Brilliant (a strong, hard-to-find move) down to Blunder (a move that seriously worsens your position).</p></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Which games can I import? <span class="chev">+</span></button>
+            <div class="faq-a"><p>Any standard PGN, plus FEN for single positions. Online import from Chess.com and Lichess accounts is on the roadmap — for now, export your games and paste them in.</p></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Do I need an account? <span class="chev">+</span></button>
+            <div class="faq-a"><p>No. Everything on this site works without signing up. Accounts (planned) will only add cloud sync for puzzle history and saved reports.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= CTA ======= -->
+    <section class="section-sm">
+      <div class="container">
+        <div class="cta-band reveal">
+          <h2 class="h-section">Your next report card is waiting.</h2>
+          <p>Bring your last painful game. Leave with the exact move that cost it — and a drill so it never happens again.</p>
+          <div class="hero-actions">
+            <a href="analysis.html" class="btn btn-lime btn-lg">Analyze a game free <span class="arrow">→</span></a>
+            <a href="puzzles.html" class="btn btn-ghost btn-lg">Warm up with puzzles</a>
+          </div>
+          <span class="mono">NO SIGN-UP · NO LIMITS · RUNS LOCALLY IN YOUR BROWSER</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======= FOOTER ======= -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo"><span class="logo-glyph">♞</span>ChessIQLabs</a>
+          <p>Analysis, puzzles, and structured improvement for club players — free, unlimited, and honest.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="analysis.html">Game Analysis</a>
+          <a href="puzzles.html">Puzzles</a>
+          <a href="training.html">Training Plans</a>
+          <a href="pricing.html">Pricing</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="about.html">About</a>
+          <a href="about.html#contact">Contact</a>
+          <a href="#" data-signin>Sign in</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="training.html#woodpecker">Woodpecker method</a>
+          <a href="training.html#plan">20-minute plan</a>
+          <a href="analysis.html">PGN analyzer</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span data-year>2026</span> ChessIQLabs. A demo project — placeholder content.</span>
+        <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/chess.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

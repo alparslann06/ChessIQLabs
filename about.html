@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — ChessIQLabs</title>
+  <meta name="description" content="About ChessIQLabs: why we built a free, honest chess improvement platform for club players." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e4f222'/><text x='50' y='72' font-size='58' text-anchor='middle'>♞</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="about">
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-glyph">♞</span>ChessIQLabs</a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="analysis.html">Analysis</a>
+        <a href="puzzles.html">Puzzles</a>
+        <a href="training.html">Training</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html" class="active">About</a>
+      </nav>
+      <div class="nav-spacer"></div>
+      <div class="nav-cta">
+        <a href="#" class="signin" data-signin>Sign in</a>
+        <a href="analysis.html" class="btn btn-white">Start free</a>
+      </div>
+      <button class="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="analysis.html">Analysis</a>
+    <a href="puzzles.html">Puzzles</a>
+    <a href="training.html">Training</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html" class="active">About</a>
+    <a href="analysis.html" class="btn btn-lime">Start free</a>
+  </div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">About</span>
+        <h1 class="h-hero">Built by players who kept losing the same way.</h1>
+        <p class="lead">ChessIQLabs started as a private script: one developer, one painful rating plateau, and a spreadsheet of every blunder from a hundred games. The spreadsheet worked. The platform is the spreadsheet, shipped.</p>
+      </div>
+    </section>
+
+    <!-- ======= VALUES ======= -->
+    <section class="section" style="padding-top:24px">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Principles</span>
+          <h2 class="h-section">What we refuse to do.</h2>
+        </div>
+        <div class="grid-3">
+          <div class="card reveal">
+            <div class="card-icon">🔓</div>
+            <h3 class="h-card">No paywalled essentials</h3>
+            <p>Game review and puzzles decide whether this site is useful. Locking them would make the whole product a teaser. They stay free — permanently.</p>
+          </div>
+          <div class="card reveal" style="--reveal-delay:.08s">
+            <div class="card-icon">🧠</div>
+            <h3 class="h-card">Honest numbers</h3>
+            <p>Accuracy scores and grades are computed, not inflated. A blunder is called a blunder, even in the report you were proud of.</p>
+          </div>
+          <div class="card reveal" style="--reveal-delay:.16s">
+            <div class="card-icon">🚫</div>
+            <h3 class="h-card">No engagement traps</h3>
+            <p>No artificial streak pressure, no dark patterns, no "daily limit" upsells. The habit you build should belong to you, not to our retention curve.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= STORY SPLIT ======= -->
+    <section class="section" style="padding-top:0">
+      <div class="container split">
+        <div class="split-copy reveal">
+          <span class="eyebrow">The origin</span>
+          <h2 class="h-sub">One spreadsheet, 100 games, +140 Elo.</h2>
+          <p>Every loss got logged: which move, what pattern, what the engine said instead. After a hundred games, three patterns explained nearly every defeat.</p>
+          <p>Training those three patterns — nothing else, no new openings, no gimmicks — moved the rating faster than a year of unfocused play before it. ChessIQLabs automates exactly that loop for everyone.</p>
+          <ul class="check-list">
+            <li>Review → find the pattern → drill the fix</li>
+            <li>Repeat weekly, measure monthly</li>
+            <li>Trust the boring work</li>
+          </ul>
+        </div>
+        <div class="reveal" style="--reveal-delay:.1s">
+          <div class="stats">
+            <div class="stat"><div class="stat-num"><span data-count="2.4" data-suffix="M">0</span></div><div class="stat-label">Games reviewed</div></div>
+            <div class="stat"><div class="stat-num"><span data-count="312">0</span></div><div class="stat-label">Pattern types detected</div></div>
+            <div class="stat"><div class="stat-num"><span data-count="96">0</span><em>%</em></div><div class="stat-label">Report agreement with coach labels</div></div>
+            <div class="stat"><div class="stat-num"><span data-count="71">0</span></div><div class="stat-label">Countries represented</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= CONTACT ======= -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Contact</span>
+          <h2 class="h-section">Say hello.</h2>
+          <p class="lead">Bug reports, feature ideas, or just a game you're proud of — we read everything.</p>
+        </div>
+        <div class="grid-2">
+          <form class="form-card reveal" id="contact-form">
+            <div class="field">
+              <label for="cf-name">Name</label>
+              <input class="input" id="cf-name" type="text" placeholder="Magnus C." required />
+            </div>
+            <div class="field">
+              <label for="cf-email">Email</label>
+              <input class="input" id="cf-email" type="email" placeholder="you@example.com" required />
+            </div>
+            <div class="field">
+              <label for="cf-msg">Message</label>
+              <textarea class="input" id="cf-msg" placeholder="I keep losing to back-rank mates and I refuse to accept it..."></textarea>
+            </div>
+            <button class="btn btn-lime" type="submit">Send message <span class="arrow">→</span></button>
+          </form>
+          <div class="card reveal" style="--reveal-delay:.08s">
+            <span class="mono">ELSEWHERE</span>
+            <div style="margin-top:14px; display:grid; gap:10px">
+              <a href="#" class="card-link">Discord community <span class="arrow">→</span></a>
+              <a href="#" class="card-link">YouTube channel <span class="arrow">→</span></a>
+              <a href="#" class="card-link">Blog <span class="arrow">→</span></a>
+            </div>
+            <p style="font-size:13px; color:var(--color-ash); margin-top:20px">
+              We usually reply within two days. The community Discord is faster, and the tactics channel is full of people celebrating their first clean 2000+ puzzle.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo"><span class="logo-glyph">♞</span>ChessIQLabs</a>
+          <p>Analysis, puzzles, and structured improvement for club players — free, unlimited, and honest.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="analysis.html">Game Analysis</a>
+          <a href="puzzles.html">Puzzles</a>
+          <a href="training.html">Training Plans</a>
+          <a href="pricing.html">Pricing</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="about.html">About</a>
+          <a href="about.html#contact">Contact</a>
+          <a href="#" data-signin>Sign in</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="training.html#woodpecker">Woodpecker method</a>
+          <a href="training.html#plan">20-minute plan</a>
+          <a href="analysis.html">PGN analyzer</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span data-year>2026</span> ChessIQLabs. A demo project — placeholder content.</span>
+        <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/chess.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Contact form — demo only, no backend
+    document.getElementById("contact-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      this.reset();
+      if (window.showToast) window.showToast("Message sent — we'll get back to you soon! (demo)");
+    });
+  </script>
+</body>
+</html>

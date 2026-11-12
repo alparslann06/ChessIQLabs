@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puzzles — ChessIQLabs</title>
+  <meta name="description" content="Free unlimited chess puzzles: mates, forks, and tactics sorted by theme and difficulty. Interactive board, hints and streaks." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e4f222'/><text x='50' y='72' font-size='58' text-anchor='middle'>♞</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="puzzles">
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-glyph">♞</span>ChessIQLabs</a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="analysis.html">Analysis</a>
+        <a href="puzzles.html" class="active">Puzzles</a>
+        <a href="training.html">Training</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="nav-spacer"></div>
+      <div class="nav-cta">
+        <a href="#" class="signin" data-signin>Sign in</a>
+        <a href="analysis.html" class="btn btn-white">Analyze games</a>
+      </div>
+      <button class="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="analysis.html">Analysis</a>
+    <a href="puzzles.html" class="active">Puzzles</a>
+    <a href="training.html">Training</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="#" class="btn btn-lime" data-signin>Start solving — free</a>
+  </div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Tactics trainer</span>
+        <h1 class="h-hero">White to play. Find the idea.</h1>
+        <p class="lead">Click a piece, then click its target square. The trainer drills the exact patterns that show up in real club games — with hints when you need them.</p>
+      </div>
+    </section>
+
+    <!-- ======= TRAINER ======= -->
+    <section class="section-sm" style="padding-top:8px">
+      <div class="container puzzle-grid">
+        <div>
+          <div class="board-frame">
+            <div class="frame-head">
+              <div class="dot-row"><i></i><i></i><i></i></div>
+              <span class="mono" id="puzzle-tag">PUZZLE 1 / 3</span>
+            </div>
+            <div class="board-wrap">
+              <div class="board" id="puzzle-board"></div>
+            </div>
+            <div class="board-legend">
+              <span id="puzzle-theme">back-rank mate</span>
+              <span id="puzzle-rating">rating ~1100</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="puzzle-side">
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
+              <span class="mono">SESSION</span>
+              <span class="badge badge-lime"><span class="streak-flames" id="streak-flames">🔥🔥🔥</span>&nbsp;streak <strong id="streak-num">0</strong></span>
+            </div>
+            <p style="font-size:14px; color:var(--color-fog)" id="puzzle-goal">
+              Goal: checkmate in one. Black's king is trapped behind its own pawns.
+            </p>
+            <div class="puzzle-status" id="puzzle-status">
+              <span class="ps-ico">♟</span><span id="status-text">White to move — find the best idea.</span>
+            </div>
+            <div class="puzzle-actions">
+              <button class="btn btn-ghost" id="btn-hint">Hint</button>
+              <button class="btn btn-ghost" id="btn-reset">Reset</button>
+              <button class="btn btn-lime" id="btn-next" disabled>Next <span class="arrow">→</span></button>
+            </div>
+            <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+          </div>
+
+          <div class="card">
+            <span class="mono">WHY THIS MATTERS</span>
+            <p style="font-size:14px; color:var(--color-fog); margin-top:10px" id="puzzle-lesson">
+              Back-rank mates are the most common finish in club chess. Before every move, ask: "is my opponent's king sealed behind its pawns?"
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="mono">HOW PUZZLES ARE PICKED</span>
+            <p style="font-size:14px; color:var(--color-fog); margin-top:10px">
+              Connect an account (soon) and the trainer selects themes from your own blunders. Today's set is a starter mix: mate in one, a royal fork, and a queen-sac mate in two.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= FILTERS (visual, wired to difficulty labels) ======= -->
+    <section class="section-sm" style="padding-top:0">
+      <div class="container">
+        <div class="filter-row reveal">
+          <button class="filter-chip active">All</button>
+          <button class="filter-chip">Mate in 1</button>
+          <button class="filter-chip">Mate in 2</button>
+          <button class="filter-chip">Forks</button>
+          <button class="filter-chip">Pins</button>
+          <button class="filter-chip">Skewers</button>
+          <button class="filter-chip">Endgame technique</button>
+        </div>
+        <div class="grid-3">
+          <div class="card reveal"><div class="badge badge-green">EASY · ~1100</div><h3 class="h-card" style="margin-top:12px">Back-rank basics</h3><p>One-move mates with rooks and queens. The patterns every player must see instantly.</p></div>
+          <div class="card reveal" style="--reveal-delay:.08s"><div class="badge badge-violet">MEDIUM · ~1600</div><h3 class="h-card" style="margin-top:12px">Royal forks &amp; pins</h3><p>Two-move combinations that win material by hitting two targets at once.</p></div>
+          <div class="card reveal" style="--reveal-delay:.16s"><div class="badge badge-red">HARD · ~2100</div><h3 class="h-card" style="margin-top:12px">Sacrificial mates</h3><p>Queen sacrifices, deflection and smothered mates — calculated, not guessed.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= CTA ======= -->
+    <section class="section-sm">
+      <div class="container">
+        <div class="cta-band reveal">
+          <h2 class="h-sub">Ten minutes a day compounds.</h2>
+          <p>Pair puzzles with game review: every blunder in your report becomes tomorrow's puzzle set.</p>
+          <div class="hero-actions">
+            <a href="analysis.html" class="btn btn-lime btn-lg">Review my games <span class="arrow">→</span></a>
+            <a href="training.html" class="btn btn-ghost btn-lg">See the method</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo"><span class="logo-glyph">♞</span>ChessIQLabs</a>
+          <p>Analysis, puzzles, and structured improvement for club players — free, unlimited, and honest.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="analysis.html">Game Analysis</a>
+          <a href="puzzles.html">Puzzles</a>
+          <a href="training.html">Training Plans</a>
+          <a href="pricing.html">Pricing</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="about.html">About</a>
+          <a href="about.html#contact">Contact</a>
+          <a href="#" data-signin>Sign in</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="training.html#woodpecker">Woodpecker method</a>
+          <a href="training.html#plan">20-minute plan</a>
+          <a href="analysis.html">PGN analyzer</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span data-year>2026</span> ChessIQLabs. A demo project — placeholder content.</span>
+        <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/chess.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/puzzles.js"></script>
+</body>
+</html>

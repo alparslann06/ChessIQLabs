@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Analysis — ChessIQLabs</title>
+  <meta name="description" content="Free chess game review: every move graded, evaluation graph, turning points explained. Paste a PGN or explore the demo game." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e4f222'/><text x='50' y='72' font-size='58' text-anchor='middle'>♞</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="analysis">
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-glyph">♞</span>ChessIQLabs</a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="analysis.html" class="active">Analysis</a>
+        <a href="puzzles.html">Puzzles</a>
+        <a href="training.html">Training</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="nav-spacer"></div>
+      <div class="nav-cta">
+        <a href="#" class="signin" data-signin>Sign in</a>
+        <a href="puzzles.html" class="btn btn-white">Solve puzzles</a>
+      </div>
+      <button class="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="analysis.html" class="active">Analysis</a>
+    <a href="puzzles.html">Puzzles</a>
+    <a href="training.html">Training</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="#" class="btn btn-lime" data-signin>Start analyzing — free</a>
+  </div>
+
+  <main>
+    <!-- ======= PAGE HERO ======= -->
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Game review</span>
+        <h1 class="h-hero">Analyze. Grade. Understand.</h1>
+        <p class="lead">Drop in a PGN and get a full report: accuracy, graded moves, and the exact moment the game turned. Explore the demo below — a famous miniature annotated at eight key moments.</p>
+      </div>
+    </section>
+
+    <!-- ======= IMPORT ======= -->
+    <section class="section-sm" style="padding-top:0">
+      <div class="container">
+        <div class="import-card reveal">
+          <div class="source-tabs">
+            <button class="source-tab active">Paste PGN</button>
+            <button class="source-tab">FEN position</button>
+            <button class="source-tab">Online games</button>
+          </div>
+          <div class="import-row">
+            <input class="input" type="text" placeholder="Paste PGN or FEN — e.g. 1. e4 e5 2. Nf3 ..." />
+            <button class="btn btn-lime" id="analyze-btn">Analyze</button>
+            <button class="btn btn-ghost" id="demo-btn">Load demo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= ANALYSIS BOARD ======= -->
+    <section class="section-sm" style="padding-top:24px">
+      <div class="container analysis-grid">
+        <div class="reveal">
+          <div class="board-frame">
+            <div class="frame-head">
+              <div class="dot-row"><i></i><i></i><i></i></div>
+              <span class="mono" id="board-status">start position</span>
+            </div>
+            <div class="board-wrap">
+              <div class="board" id="analysis-board"></div>
+            </div>
+            <div class="board-legend">
+              <span>Morphy — Duke of Brunswick &amp; Count Isouard, Paris 1858</span>
+              <span id="board-eval">eval 0.0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="moves-panel reveal" style="--reveal-delay:.08s">
+          <div class="moves-head">
+            <span class="mono">KEY POSITIONS · 8</span>
+            <span class="badge badge-lime">demo game</span>
+          </div>
+          <div class="moves-list" id="moves-list"></div>
+          <div class="analysis-controls">
+            <button class="ctrl-btn" id="ctrl-start">⏮ Start</button>
+            <button class="ctrl-btn" id="ctrl-prev">← Prev</button>
+            <button class="ctrl-btn" id="ctrl-next">Next →</button>
+            <button class="ctrl-btn" id="ctrl-end">End ⏭</button>
+          </div>
+          <div class="note-card">
+            <span class="n-move" id="note-move">—</span>
+            <p id="note-text">Press "Load demo", then step through the moves — or click any key position in the list.</p>
+            <div class="eval-line">
+              <span>MOVE GRADE</span>
+              <strong id="note-grade">—</strong>
+            </div>
+          </div>
+          <p class="mono" style="margin-top:12px; display:block">TIP: USE ← / → ARROW KEYS TO STEP</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= FULL MOVES + EVAL GRAPH ======= -->
+    <section class="section">
+      <div class="container split">
+        <div class="split-copy reveal">
+          <span class="eyebrow">What the report shows</span>
+          <h2 class="h-sub">The full scorecard of a legendary miniature.</h2>
+          <p style="font-family:var(--font-mono); font-size:13px; line-height:1.9; color:var(--color-mist); margin-top:8px">
+            1.e4 e5 2.Nf3 d6 3.d4 Bg4 4.dxe5 Bxf3 5.Qxf3 dxe5 6.Bc4 Nf6 7.Qb3! Qe7 8.Nc3 c6 9.Bg5 b5? 10.Nxb5! cxb5 11.Bxb5+ Nbd7 12.0-0-0 Rd8 13.Rxd7! Rxd7 14.Rd1 Qe6 15.Bxd7+ Nxd7 16.Qb8+!! Nxb8 17.Rd8#
+          </p>
+          <p>Morphy wins with pure development — while his opponents bring out only two pieces, he sacrifices everything to hammer the pinned knight. A perfect game to study against "castle early, develop everything" instincts.</p>
+          <ul class="check-list">
+            <li>Grades detect ideas, not just captures — Qb8+!! gets flagged as brilliant</li>
+            <li>Turning points are ranked by how much they shifted the eval</li>
+            <li>Report ends with one drill targeting the losing pattern</li>
+          </ul>
+        </div>
+        <div class="reveal" style="--reveal-delay:.1s">
+          <div class="eval-graph">
+            <div class="eg-head"><span>EVALUATION — KEY POSITIONS</span><span>WHITE ↑</span></div>
+            <div class="eval-bars" id="live-eval-bars">
+              <div class="eval-bar" style="height:50%" title="Start: even"></div>
+              <div class="eval-bar" style="height:53%" title="3...Bg4"></div>
+              <div class="eval-bar" style="height:56%" title="5...dxe5"></div>
+              <div class="eval-bar" style="height:62%" title="7.Qb3!"></div>
+              <div class="eval-bar blunder" style="height:30%" title="9...b5?"></div>
+              <div class="eval-bar hot" style="height:80%" title="11...Nbd7"></div>
+              <div class="eval-bar hot" style="height:88%" title="13...Rxd7"></div>
+              <div class="eval-bar hot" style="height:94%" title="15...Nxd7"></div>
+              <div class="eval-bar hot" style="height:100%" title="17.Rd8#"></div>
+            </div>
+            <div class="eval-line">
+              <span>FINAL ACCURACY</span>
+              <strong>White 97.1% · Black 63.4%</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= CTA ======= -->
+    <section class="section-sm">
+      <div class="container">
+        <div class="cta-band reveal">
+          <h2 class="h-sub">Bring your own pain.</h2>
+          <p>Load the game you keep re-opening at 2am. The report will tell you what actually went wrong.</p>
+          <div class="hero-actions">
+            <a href="puzzles.html" class="btn btn-lime btn-lg">Train the fix <span class="arrow">→</span></a>
+            <a href="training.html" class="btn btn-ghost btn-lg">Build a plan</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo"><span class="logo-glyph">♞</span>ChessIQLabs</a>
+          <p>Analysis, puzzles, and structured improvement for club players — free, unlimited, and honest.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="analysis.html">Game Analysis</a>
+          <a href="puzzles.html">Puzzles</a>
+          <a href="training.html">Training Plans</a>
+          <a href="pricing.html">Pricing</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="about.html">About</a>
+          <a href="about.html#contact">Contact</a>
+          <a href="#" data-signin>Sign in</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="training.html#woodpecker">Woodpecker method</a>
+          <a href="training.html#plan">20-minute plan</a>
+          <a href="analysis.html">PGN analyzer</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span data-year>2026</span> ChessIQLabs. A demo project — placeholder content.</span>
+        <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/chess.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/analysis.js"></script>
+</body>
+</html>

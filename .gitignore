@@ -1,0 +1,15 @@
+# ChessIQLabs — no build artifacts, but keep this tidy anyway
+
+# OS junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Local server / tooling
+node_modules/
+*.log
