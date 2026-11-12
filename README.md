@@ -33,7 +33,6 @@ Then open `http://localhost:8000`.
 | `analysis.html` | Interactive **game review**: an annotated walkthrough of the famous *Opera Game* (Morphy 1858) — 8 key positions, move grades, eval readout, keyboard navigation (← →) |
 | `puzzles.html` | Interactive **tactics trainer** — click piece → click target. 3 scripted puzzles (back-rank mate, royal fork, queen-sac mate in 2), hints, streak saved in `localStorage` |
 | `training.html` | Improvement method page — roadmap, daily 20-minute plan, mistake pattern library |
-| `pricing.html` | Free / Pro / Coach tiers + comparison table + FAQ |
 | `about.html` | Mission, principles, stats, demo contact form (toast, no backend) |
 
 ## 📁 Structure
@@ -44,7 +43,6 @@ chessiqlabs/
 ├── analysis.html
 ├── puzzles.html
 ├── training.html
-├── pricing.html
 ├── about.html
 ├── css/
 │   └── style.css        # full design system (tokens → components → responsive)

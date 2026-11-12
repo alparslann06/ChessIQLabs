@@ -1003,61 +1003,6 @@ textarea.input { resize: vertical; min-height: 120px; }
 }
 
 /* ============================================================
-   PRICING
-   ============================================================ */
-.pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  align-items: stretch;
-}
-.price-card {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-.price-card.popular {
-  background: var(--color-carbon);
-  box-shadow: inset 0 0 0 1px rgba(228,242,34,.5), var(--shadow-xl);
-}
-.pop-tag {
-  position: absolute;
-  top: -12px; left: 24px;
-  background: var(--color-acid-lime);
-  color: var(--color-void);
-  font-size: 11px;
-  font-weight: 510;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  border-radius: var(--radius-pills);
-  padding: 4px 12px;
-}
-.price-num {
-  font-size: 44px;
-  font-weight: 510;
-  letter-spacing: -0.022em;
-  color: var(--color-paper);
-  line-height: 1;
-  margin: 12px 0 4px;
-}
-.price-num small { font-size: 15px; color: var(--color-fog); font-weight: 400; letter-spacing: 0; }
-.price-sub { font-size: 13px; color: var(--color-fog); margin-bottom: 20px; }
-.price-card .check-list { margin-bottom: 24px; }
-.price-card .btn { margin-top: auto; width: 100%; }
-
-.compare-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.compare-table th, .compare-table td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.compare-table th { color: var(--color-paper); font-weight: 510; font-size: 13px; }
-.compare-table td { color: var(--color-fog); }
-.compare-table td.yes { color: var(--color-pulse-green); }
-.compare-table td.no { color: var(--color-ash); }
-.compare-table tr:last-child td { border-bottom: 0; }
-
-/* ============================================================
    TRAINING PAGE
    ============================================================ */
 .rail { position: relative; display: grid; gap: 16px; }
@@ -1179,7 +1124,6 @@ footer {
   .split { grid-template-columns: 1fr; gap: 40px; }
   .split.rev .split-copy { order: 0; }
   .stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-  .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .section { padding: 64px 0; }
   .steps { grid-template-columns: 1fr; gap: 32px; }
