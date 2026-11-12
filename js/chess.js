@@ -56,6 +56,40 @@
     return r * 8 + f;
   }
 
+  function distSq(a, b) {
+    const dr = Math.floor(a / 8) - Math.floor(b / 8);
+    const dc = (a % 8) - (b % 8);
+    return dr * dr + dc * dc;
+  }
+
+  /* Can a piece of this type plausibly make this move? Used ONLY for
+     fallback transitions (when the real move is unknown): a slide is
+     shown only if its shape is legal for that piece — pawns can never
+     slide sideways or backward, sliders only on straight lines, etc. */
+  function plausibleMove(type, color, from, to) {
+    const dr = Math.floor(to / 8) - Math.floor(from / 8);
+    const dc = (to % 8) - (from % 8);
+    const adr = Math.abs(dr), adc = Math.abs(dc);
+    if (adr === 0 && adc === 0) return false;
+    switch (type) {
+      case "p": {
+        /* rows run 8→1, so White moves toward smaller row indexes */
+        if (color === "w") {
+          if (dc === 0) return dr === -1 || (dr === -2 && Math.floor(from / 8) === 6);
+          return dr === -1 && adc === 1;
+        }
+        if (dc === 0) return dr === 1 || (dr === 2 && Math.floor(from / 8) === 1);
+        return dr === 1 && adc === 1;
+      }
+      case "n": return (adr === 2 && adc === 1) || (adr === 1 && adc === 2);
+      case "b": return adr === adc;
+      case "r": return dr === 0 || dc === 0;
+      case "q": return adr === adc || dr === 0 || dc === 0;
+      case "k": return adr <= 1 && adc <= 1;
+    }
+    return false;
+  }
+
   /* Build a board. Returns { el, setBoard(board, marks, moves), setFEN, setMarks, squares }
      moves: optional array of {from, to} square names (e.g. {from:"e2", to:"e4"}).
      Castling = two entries (king + rook). */
@@ -142,26 +176,22 @@
       return { el: holder, type: piece.type, color: piece.color, index: index };
     }
 
-    /* Try to reuse a piece that is currently fading out (fast navigation) */
+    /* Revive a piece that is currently fading out — but ONLY if it is
+       already standing on the exact target square (fast-navigation case).
+       A revived piece is never repositioned, so it can never be seen
+       sliding in from somewhere else. */
     function reviveZombie(piece, index) {
-      let best = null, bestIdx = -1, bestDist = Infinity;
       for (let k = 0; k < zombies.length; k++) {
         const z = zombies[k];
-        if (z.type !== piece.type || z.color !== piece.color) continue;
-        const dr = Math.floor(z.index / 8) - Math.floor(index / 8);
-        const dc = (z.index % 8) - (index % 8);
-        const d = dr * dr + dc * dc;
-        if (d < bestDist) { bestDist = d; best = z; bestIdx = k; }
+        if (z.index !== index || z.type !== piece.type || z.color !== piece.color) continue;
+        zombies.splice(k, 1);
+        clearTimeout(z.timer);
+        z.el.classList.remove("exit");
+        z.el.style.zIndex = 4;
+        setTimeout(() => { z.el.style.zIndex = 3; }, 300);
+        return z;
       }
-      if (!best) return null;
-      zombies.splice(bestIdx, 1);
-      clearTimeout(best.timer);
-      best.el.classList.remove("exit");
-      best.index = index;
-      place(best.el, index);
-      best.el.style.zIndex = 4;
-      setTimeout(() => { best.el.style.zIndex = 3; }, 300);
-      return best;
+      return null;
     }
 
     function fadeOut(p) {
@@ -243,8 +273,11 @@
         return;
       }
 
-      /* =========== FALLBACK MODE: no move info — never guess ===========
-         Stationary pieces stay put; every difference fades in/out. */
+      /* =========== FALLBACK MODE: no move info — never guess wildly ===
+         Stationary pieces stay put. A displaced piece slides only when
+         the move shape is legal for its type (plausibleMove); everything
+         else fades in/out. A pawn can therefore NEVER be seen sliding
+         sideways or backward, in any mode. */
       const keep = new Array(64).fill(false);
       for (let i = 0; i < 64; i++) {
         const np = newBoard[i];
@@ -257,12 +290,29 @@
           keep[i] = true;
         }
       }
-      remaining.forEach(fadeOut);
       for (let i = 0; i < 64; i++) {
         const np = newBoard[i];
         if (!np || keep[i]) continue;
-        pool.push(reviveZombie(np, i) || spawnPiece(np, i));
+        let best = null, bestIdx = -1, bestDist = Infinity;
+        for (let k = 0; k < remaining.length; k++) {
+          const p = remaining[k];
+          if (p.type !== np.type || p.color !== np.color) continue;
+          if (!plausibleMove(p.type, p.color, p.index, i)) continue;
+          const d = distSq(p.index, i);
+          if (d < bestDist) { bestDist = d; best = p; bestIdx = k; }
+        }
+        if (best) {
+          remaining.splice(bestIdx, 1);
+          best.index = i;
+          place(best.el, i);
+          best.el.style.zIndex = 4;
+          setTimeout(() => { best.el.style.zIndex = 3; }, 300);
+          pool.push(best);
+        } else {
+          pool.push(reviveZombie(np, i) || spawnPiece(np, i));
+        }
       }
+      remaining.forEach(fadeOut);
     }
 
     function setBoard(board, newMarks, moves) {
