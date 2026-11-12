@@ -8,6 +8,7 @@
 
 (function () {
   "use strict";
+  console.log("[ChessIQLabs] analysis.js build 7 — 3.d4 FEN fix active");
   if (!window.ChessBoard) return;
 
   const CB = window.ChessBoard;
@@ -55,7 +56,7 @@
     { san: "10... cxb5", white: false, fen: "rn2kb1r/p3qppp/8/1p2p1B2/2B1P3/1Q6/PPP2PPP/R3K2R w KQkq - 0 11", v: 3.2, grade: "ok", note: "Forced — declining the capture costs even more." },
     { san: "11. Bxb5+", white: true,  fen: "rn2kb1r/p3qppp/8/1B2p1B2/4P3/1Q6/PPP2PPP/R3K2R b KQkq - 0 11", v: 3.6, grade: "good", note: "Check along the b5–e8 diagonal, with the f6-knight still pinned by the g5-bishop." },
     { san: "11... Nbd7", white: false, fen: "r3kb1r/p2nqppp/5n2/1B2p1B2/4P3/1Q6/PPP2PPP/R3K2R w KQkq - 1 12", v: 3.8, grade: "ok", note: "Black is a pawn up but strategically lost: the f6-knight is pinned, d7 is a parking lot, and every White piece aims at d7." },
-    { san: "12. O-O-O", white: true,  fen: "r3kb1r/p2nqppp/5n2/1B2p1B2/4P3/1Q6/PPP2PPP/2KR3R b k - 2 12", v: 4.2, grade: "good", note: "White castles INTO the attack — the rook lands on the d-file. Black cannot even castle: the pinned knight freezes everything." },
+    { san: "12. O-O-O", white: true,  fen: "r3kb1r/p2nqppp/5n2/1B2p1B2/4P3/1Q6/PPP2PPP/2KR3R b kq - 2 12", v: 4.2, grade: "good", note: "White castles INTO the attack — the rook lands on the d-file. Black cannot even castle: the pinned knight freezes everything." },
     { san: "12... Rd8", white: false, fen: "3rkb1r/p2nqppp/5n2/1B2p1B2/4P3/1Q6/PPP2PPP/2KR3R w k - 3 13", v: 4.8, grade: "mistake", note: "Practically forced, but it walks the rook straight into the d-file carnage." },
     { san: "13. Rxd7", white: true,  fen: "3rkb1r/p2Rqppp/5n2/1B2p1B2/4P3/1Q6/PPP2PPP/2K4R b k - 0 13", v: 5.2, grade: "brilliant", note: "The pin is cashed in: rook takes knight, and every recapture is forced — the whole point of 12.O-O-O." },
     { san: "13... Rxd7", white: false, fen: "7r/p2rqppp/5n2/1B2p1B2/4P3/1Q6/PPP2PPP/2K4R w k - 0 14", v: 5.5, grade: "mistake", note: "The rook recaptures into a grave. White's remaining rook is perfectly placed on the d-file, and Black's king is still in the center." },

@@ -19,6 +19,8 @@
 (function () {
   "use strict";
 
+  console.log("[ChessIQLabs] chess.js build 7 — exact-move animation engine");
+
   const FILES = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
   /* Unicode glyph set — fallback when piece images can't load */
