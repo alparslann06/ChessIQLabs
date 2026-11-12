@@ -68,6 +68,23 @@
     { san: "17. Rd8#", white: true,  fen: "1n1R3r/p4ppp/4q3/4p1B2/4P3/8/PPP2PPP/2K5 b k - 0 17", v: 99, grade: "mate", note: "Mate with the last two pieces developed — the classic finish. The g5-bishop 'protects' the mating rook from afar. Every piece except the king took part." }
   ];
 
+  /* Real move data per ply (from→to), for exact animation.
+     Index matches POSITIONS (index 0 = start position, no move).
+     Castling is two entries: king + rook. */
+  const MOVES = [
+    null,
+    ["e2e4"], ["e7e5"], ["g1f3"], ["d7d6"], ["d2d4"], ["c8g4"],
+    ["d4e5"], ["g4f3"], ["d1f3"], ["d6e5"], ["f1c4"], ["g8f6"],
+    ["f3b3"], ["d8e7"], ["b1c3"], ["c7c6"], ["c1g5"], ["b7b5"],
+    ["c3b5"], ["c6b5"], ["c4b5"], ["b8d7"], ["e1c1", "a1d1"], ["a8d8"],
+    ["d1d7"], ["d8d7"], ["h1d1"], ["e7e6"], ["b5d7"], ["f6d7"],
+    ["b3b8"], ["d7b8"], ["d1d8"]
+  ];
+
+  function decodeMoves(list) {
+    return list.map((s) => ({ from: s.slice(0, 2), to: s.slice(2, 4) }));
+  }
+
   const boardEl = document.getElementById("analysis-board");
   const movesList = document.getElementById("moves-list");
   const statusEl = document.getElementById("board-status");
@@ -91,7 +108,7 @@
       '<span><span class="m-num">' + numLabel + "</span>" + sanLabel + "</span>" +
       (pos.grade ? badgeHTML(pos.grade) : '<span class="grade-dot g-ok"></span>');
     btn.title = pos.san;
-    btn.addEventListener("click", () => render(i));
+    btn.addEventListener("click", () => goTo(i));
     movesList.appendChild(btn);
   });
 
@@ -111,10 +128,10 @@
     barsEl.appendChild(bar);
   });
 
-  function render(idx) {
+  function render(idx, moves) {
     current = idx;
     const pos = POSITIONS[idx];
-    board.setFEN(pos.fen);
+    board.setFEN(pos.fen, null, moves || null);
     statusEl.textContent = idx === 0 ? "start position" : "after " + pos.san;
     evalEl.textContent = "eval " + (pos.v >= 99 ? "#" : "+" + pos.v.toFixed(1));
     noteMove.innerHTML = pos.san + " " + badgeHTML(pos.grade, true);
@@ -126,15 +143,32 @@
     });
   }
 
+  /* Navigate with real animation: a single step forward animates the
+     exact move that was played; a single step back slides the mover
+     home and revives what it captured. Multi-position jumps teleport
+     (fade) — never a guessed slide. */
+  function goTo(idx) {
+    idx = Math.max(0, Math.min(POSITIONS.length - 1, idx));
+    if (idx === current) return;
+    const diff = idx - current;
+    let moves = null;
+    if (Math.abs(diff) === 1) {
+      moves = diff === 1
+        ? decodeMoves(MOVES[idx])
+        : decodeMoves(MOVES[current]).map((m) => ({ from: m.to, to: m.from }));
+    }
+    render(idx, moves);
+  }
+
   /* ---- Controls ---- */
-  document.getElementById("ctrl-start").addEventListener("click", () => render(0));
-  document.getElementById("ctrl-prev").addEventListener("click", () => render(Math.max(0, current - 1)));
-  document.getElementById("ctrl-next").addEventListener("click", () => render(Math.min(POSITIONS.length - 1, current + 1)));
-  document.getElementById("ctrl-end").addEventListener("click", () => render(POSITIONS.length - 1));
+  document.getElementById("ctrl-start").addEventListener("click", () => goTo(0));
+  document.getElementById("ctrl-prev").addEventListener("click", () => goTo(current - 1));
+  document.getElementById("ctrl-next").addEventListener("click", () => goTo(current + 1));
+  document.getElementById("ctrl-end").addEventListener("click", () => goTo(POSITIONS.length - 1));
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") render(Math.max(0, current - 1));
-    if (e.key === "ArrowRight") render(Math.min(POSITIONS.length - 1, current + 1));
+    if (e.key === "ArrowLeft") goTo(current - 1);
+    if (e.key === "ArrowRight") goTo(current + 1);
   });
 
   /* ---- Import demo buttons ---- */
@@ -146,7 +180,7 @@
   document.getElementById("analyze-btn").addEventListener("click", () => {
     if (window.showToast) {
       window.showToast("PGN import is simulated in this demo — try the demo game instead.");
-      setTimeout(() => render(1), 600);
+      setTimeout(() => goTo(1), 600);
     }
   });
 

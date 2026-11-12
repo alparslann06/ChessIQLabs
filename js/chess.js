@@ -3,15 +3,17 @@
    Chessboard engine: FEN parsing, board rendering with ANIMATED
    piece movement, click selection, and pseudo-move application.
 
-   Animation core (bug-fixed):
-   - Pass 1: pieces already standing on the same square are kept
-     in place and NEVER animated.
-   - Pass 2: displaced pieces slide only when the match is
-     unambiguous (single candidate) or a plausible move distance
-     (knight = max 2 squares). Everything else fades in/out.
-   - "Zombie" recovery: pieces fading out from a capture can be
-     revived if the very next position needs them again (fast
-     navigation), preventing ghost duplicates.
+   Animation core:
+   - setBoard(board, marks, moves): when the caller supplies the
+     real move(s) (from/to), ONLY those pieces slide — exactly the
+     piece that moved, plus castling rooks. Captured pieces fade
+     out beneath, stationary pieces never animate.
+   - Without move data the board transitions by teleport-fades
+     (stationary pieces stay, differences fade) — it never guesses
+     a slide, so no illegal-looking movement is ever shown.
+   - "Zombie" recovery: pieces fading out can be revived when the
+     next position needs them again (fast navigation), preventing
+     ghost duplicates.
    ============================================================ */
 
 (function () {
@@ -25,11 +27,6 @@
   /* Vector piece set: chess.com's "neo" pieces (rounded style), served
      from chess.com's CDN as PNGs. Offline → glyph fallback via onerror. */
   const PIECE_IMG_BASE = "https://images.chesscomfiles.com/chess-themes/pieces/neo/150/";
-
-  /* Max squared distance for a "plausible slide" when the piece identity
-     is ambiguous. A knight jump is at most 2+2*... : |dr|<=2, |dc|<=1 → d<=5.
-     8 covers knight moves with margin; anything farther fades instead. */
-  const MAX_SLIDE_DIST_SQ = 8;
 
   /* Parse the board part of a FEN into a flat 64-array.
      Index 0 = a8, index 7 = h8, index 63 = h1 (row-major, white orientation).
@@ -59,13 +56,9 @@
     return r * 8 + f;
   }
 
-  function distSq(a, b) {
-    const dr = Math.floor(a / 8) - Math.floor(b / 8);
-    const dc = (a % 8) - (b % 8);
-    return dr * dr + dc * dc;
-  }
-
-  /* Build a board. Returns { el, setBoard(board, marks), setFEN, setMarks, squares } */
+  /* Build a board. Returns { el, setBoard(board, marks, moves), setFEN, setMarks, squares }
+     moves: optional array of {from, to} square names (e.g. {from:"e2", to:"e4"}).
+     Castling = two entries (king + rook). */
   function createBoard(el, options) {
     options = options || {};
     const interactive = !!options.interactive;
@@ -97,10 +90,7 @@
       squares.push(sq);
     }
 
-    /* ---- Animated piece layer ----
-       Pieces are absolutely-positioned elements ON the board, moved via
-       transform. A diff between consecutive boards slides only the
-       pieces that actually moved. */
+    /* ---- Animated piece layer ---- */
     let currentBoard = null;
     let pool = [];     // live pieces: { el, type, color, index }
     let zombies = [];  // fading-out pieces, recoverable: { el, type, color, index, timer }
@@ -143,13 +133,24 @@
       }
     }
 
+    function spawnPiece(piece, index) {
+      const holder = buildPieceHolder(piece);
+      holder.classList.add("enter");
+      place(holder, index);
+      el.appendChild(holder);
+      requestAnimationFrame(() => requestAnimationFrame(() => holder.classList.remove("enter")));
+      return { el: holder, type: piece.type, color: piece.color, index: index };
+    }
+
     /* Try to reuse a piece that is currently fading out (fast navigation) */
     function reviveZombie(piece, index) {
       let best = null, bestIdx = -1, bestDist = Infinity;
       for (let k = 0; k < zombies.length; k++) {
         const z = zombies[k];
         if (z.type !== piece.type || z.color !== piece.color) continue;
-        const d = distSq(z.index, index);
+        const dr = Math.floor(z.index / 8) - Math.floor(index / 8);
+        const dc = (z.index % 8) - (index % 8);
+        const d = dr * dr + dc * dc;
         if (d < bestDist) { bestDist = d; best = z; bestIdx = k; }
       }
       if (!best) return null;
@@ -159,96 +160,121 @@
       best.index = index;
       place(best.el, index);
       best.el.style.zIndex = 4;
-      setTimeout(() => { best.el.style.zIndex = 3; }, 280);
+      setTimeout(() => { best.el.style.zIndex = 3; }, 300);
       return best;
     }
 
-    function spawnPiece(piece, index) {
-      const holder = buildPieceHolder(piece);
-      holder.classList.add("enter");
-      place(holder, index);
-      el.appendChild(holder);
-      const entry = { el: holder, type: piece.type, color: piece.color, index: index };
-      requestAnimationFrame(() => requestAnimationFrame(() => holder.classList.remove("enter")));
-      return entry;
+    function fadeOut(p) {
+      p.el.style.zIndex = 2;   /* fade beneath whatever replaces it */
+      p.el.classList.add("exit");
+      p.timer = setTimeout(() => {
+        p.el.remove();
+        const zi = zombies.indexOf(p);
+        if (zi !== -1) zombies.splice(zi, 1);
+      }, 240);
+      zombies.push(p);
     }
 
-    function syncPieces(oldBoard, newBoard) {
+    function normMoves(moves) {
+      if (!moves || !moves.length) return null;
+      return moves.map((m) => ({
+        from: typeof m.from === "string" ? squareIndex(m.from) : m.from,
+        to: typeof m.to === "string" ? squareIndex(m.to) : m.to
+      }));
+    }
+
+    function syncPieces(oldBoard, newBoard, moves) {
       const remaining = pool.slice();
       pool = [];
-      const consumed = new Array(64).fill(false);
+      const mv = normMoves(moves);
 
-      /* ---- Pass 1: same piece on the same square → keep perfectly still ---- */
-      for (let i = 0; i < 64; i++) {
-        const np = newBoard[i];
-        if (!np) continue;
-        for (let k = 0; k < remaining.length; k++) {
-          const p = remaining[k];
-          if (p.index === i && p.type === np.type && p.color === np.color) {
-            remaining.splice(k, 1);
+      /* =========== EXACT MODE: the real move(s) are known =========== */
+      if (mv && oldBoard) {
+        const sources = new Set(mv.map((m) => m.from));
+        const accounted = new Array(64).fill(false);
+
+        /* 1. stationary pieces: same type/color on the same square,
+              and not the source of a move → keep perfectly still */
+        for (let i = 0; i < 64; i++) {
+          const np = newBoard[i];
+          if (!np || sources.has(i)) continue;
+          const k = remaining.findIndex((p) => p.index === i && p.type === np.type && p.color === np.color);
+          if (k !== -1) {
+            const p = remaining.splice(k, 1)[0];
             p.el.style.zIndex = 3;
             pool.push(p);
-            consumed[i] = true;
-            break;
+            accounted[i] = true;
           }
         }
+
+        /* 2. movers: slide exactly the given pieces. The mover's identity
+              comes from the OLD board (what stood on m.from before the
+              move) — this is what makes backward steps through captures
+              work: the capturer slides home, the captured piece fades in
+              at the capture square. */
+        mv.forEach((m) => {
+          const mp = oldBoard[m.from] || newBoard[m.to];
+          if (!mp) return;
+          let k = remaining.findIndex((p) => p.index === m.from && p.type === mp.type && p.color === mp.color);
+          let p;
+          if (k !== -1) {
+            p = remaining.splice(k, 1)[0];
+          } else {
+            /* source element unavailable (rapid navigation) — revive or spawn at origin */
+            p = reviveZombie(mp, m.from) || spawnPiece(mp, m.from);
+          }
+          p.index = m.to;
+          place(p.el, m.to);
+          p.el.style.zIndex = 4;
+          setTimeout(() => { p.el.style.zIndex = 3; }, 300);
+          pool.push(p);
+          accounted[m.to] = true;
+        });
+
+        /* 3. everything left over vanished (captures) → fade out */
+        remaining.forEach(fadeOut);
+
+        /* 4. brand-new pieces (e.g. reversed capture) → fade in */
+        for (let i = 0; i < 64; i++) {
+          const np = newBoard[i];
+          if (!np || accounted[i]) continue;
+          pool.push(reviveZombie(np, i) || spawnPiece(np, i));
+        }
+        return;
       }
 
-      /* ---- Pass 2: displaced pieces — slide only when it makes sense ---- */
+      /* =========== FALLBACK MODE: no move info — never guess ===========
+         Stationary pieces stay put; every difference fades in/out. */
+      const keep = new Array(64).fill(false);
       for (let i = 0; i < 64; i++) {
-        if (consumed[i]) continue;
         const np = newBoard[i];
         if (!np) continue;
-
-        let best = null, bestIdx = -1, bestDist = Infinity, candidates = 0;
-        for (let k = 0; k < remaining.length; k++) {
-          const p = remaining[k];
-          if (p.type !== np.type || p.color !== np.color) continue;
-          candidates++;
-          const d = distSq(p.index, i);
-          if (d < bestDist) { bestDist = d; best = p; bestIdx = k; }
-        }
-
-        /* Slide only when unambiguous (one candidate → it must be the mover)
-           or when the distance is a plausible single-move distance. */
-        if (best && (candidates === 1 || bestDist <= MAX_SLIDE_DIST_SQ)) {
-          remaining.splice(bestIdx, 1);
-          best.index = i;
-          place(best.el, i);
-          best.el.style.zIndex = 4;
-          setTimeout(() => { best.el.style.zIndex = 3; }, 280);
-          pool.push(best);
-        } else {
-          /* No sensible animation → fade in a fresh (or revived) piece */
-          const revived = reviveZombie(np, i);
-          pool.push(revived || spawnPiece(np, i));
+        const k = remaining.findIndex((p) => p.index === i && p.type === np.type && p.color === np.color);
+        if (k !== -1) {
+          const p = remaining.splice(k, 1)[0];
+          p.el.style.zIndex = 3;
+          pool.push(p);
+          keep[i] = true;
         }
       }
-
-      /* ---- Everything unmatched fades out (captures, disappearances) ---- */
-      remaining.forEach((p) => {
-        const entry = p;
-        entry.el.style.zIndex = 2;
-        entry.el.classList.add("exit");
-        entry.timer = setTimeout(() => {
-          entry.el.remove();
-          const zi = zombies.indexOf(entry);
-          if (zi !== -1) zombies.splice(zi, 1);
-        }, 240);
-        zombies.push(entry);
-      });
+      remaining.forEach(fadeOut);
+      for (let i = 0; i < 64; i++) {
+        const np = newBoard[i];
+        if (!np || keep[i]) continue;
+        pool.push(reviveZombie(np, i) || spawnPiece(np, i));
+      }
     }
 
-    function setBoard(board, newMarks) {
+    function setBoard(board, newMarks, moves) {
       const old = currentBoard;
       currentBoard = board.slice();
       if (newMarks) marks = Object.assign({ sel: null, targets: [], last: [], hint: [] }, newMarks);
       paintSquares();
-      syncPieces(old || new Array(64).fill(null), currentBoard);
+      syncPieces(old || new Array(64).fill(null), currentBoard, moves);
     }
 
-    function setFEN(fen, newMarks) {
-      setBoard(parseFEN(fen), newMarks);
+    function setFEN(fen, newMarks, moves) {
+      setBoard(parseFEN(fen), newMarks, moves);
     }
 
     function setMarks(newMarks) {

@@ -101,6 +101,8 @@
   let selected = null;
   let solvedStreak = 0;
   let busy = false;
+  let resetting = false;
+  let playedMoves = [];       // {from, to} in the order they were played
 
   function loadStreak() {
     solvedStreak = parseInt(localStorage.getItem("cql-streak") || "0", 10);
@@ -127,9 +129,10 @@
     phase = "user";
     selected = null;
     busy = false;
+    playedMoves = [];
     const p = PUZZLES[puzzleIdx];
     boardState = CB.parseFEN(p.fen);
-    board.setBoard(boardState);
+    board.setBoard(boardState);   // puzzle switch = teleport (fade)
     tagEl.textContent = "PUZZLE " + (puzzleIdx + 1) + " / " + PUZZLES.length;
     themeEl.textContent = p.theme;
     ratingEl.textContent = "rating " + p.rating + " · " + p.difficulty;
@@ -185,8 +188,9 @@
     const step = PUZZLES[puzzleIdx].steps[stepIdx];
     busy = true;
     boardState = CB.applyMove(boardState, step.from, step.to);
+    playedMoves.push({ from: step.from, to: step.to });
     selected = null;
-    board.setBoard(boardState, { last: [step.from, step.to] });
+    board.setBoard(boardState, { last: [step.from, step.to] }, [{ from: step.from, to: step.to }]);
     setStatus("✔ " + step.san + " — " + step.success, "ok");
     progressFill.style.width = Math.round(((stepIdx + 1) / PUZZLES[puzzleIdx].steps.length) * 100) + "%";
 
@@ -196,7 +200,9 @@
       phase = "reply";
       setTimeout(() => {
         boardState = CB.applyMove(boardState, step.reply.from, step.reply.to);
-        board.setBoard(boardState, { last: [step.reply.from, step.reply.to] });
+        playedMoves.push({ from: step.reply.from, to: step.reply.to });
+        board.setBoard(boardState, { last: [step.reply.from, step.reply.to] },
+          [{ from: step.reply.from, to: step.reply.to }]);
         stepIdx++;
         phase = "user";
         busy = false;
@@ -234,7 +240,40 @@
     return p ? names[p.type] : "piece";
   }
 
-  btnReset.addEventListener("click", () => loadPuzzle(puzzleIdx));
+  /* Reset: undo every played move in reverse — each undo is a real
+     move, so pieces slide back exactly the way they came and captured
+     pieces fade back in where they were taken. */
+  btnReset.addEventListener("click", () => {
+    if (busy || resetting || playedMoves.length === 0) return;
+    resetting = true;
+    selected = null;
+    board.setMarks({});
+    clearTransientMarks();
+
+    /* rebuild the position after each played move, start → current */
+    const states = [CB.parseFEN(PUZZLES[puzzleIdx].fen)];
+    playedMoves.forEach((m) => states.push(CB.applyMove(states[states.length - 1], m.from, m.to)));
+
+    let i = states.length - 1;
+    (function stepBack() {
+      i--;
+      if (i < 0) {
+        boardState = states[0];
+        playedMoves = [];
+        stepIdx = 0;
+        phase = "user";
+        resetting = false;
+        btnNext.disabled = true;
+        progressFill.style.width = "0%";
+        setStatus("White to move — find the best idea.");
+        return;
+      }
+      const m = playedMoves[i];   // the move that went states[i] → states[i+1]
+      boardState = states[i];
+      board.setBoard(boardState, null, [{ from: m.to, to: m.from }]);
+      setTimeout(stepBack, 280);
+    })();
+  });
 
   btnNext.addEventListener("click", () => {
     const nextIdx = (puzzleIdx + 1) % PUZZLES.length;
