@@ -1196,5 +1196,10 @@ footer {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+  /* Piece movement is FUNCTIONAL information on a chessboard, not
+     decoration — keep the slide (shortened) so moves stay readable. */
+  .bpiece {
+    transition-duration: .18s !important;
+  }
   html { scroll-behavior: auto; }
 }
