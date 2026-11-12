@@ -1,9 +1,17 @@
 /* ============================================================
    ChessIQLabs — js/chess.js
    Chessboard engine: FEN parsing, board rendering with ANIMATED
-   piece movement (persistent piece elements sliding between
-   squares, captures fading out), click selection, and
-   pseudo-move application. No external libraries.
+   piece movement, click selection, and pseudo-move application.
+
+   Animation core (bug-fixed):
+   - Pass 1: pieces already standing on the same square are kept
+     in place and NEVER animated.
+   - Pass 2: displaced pieces slide only when the match is
+     unambiguous (single candidate) or a plausible move distance
+     (knight = max 2 squares). Everything else fades in/out.
+   - "Zombie" recovery: pieces fading out from a capture can be
+     revived if the very next position needs them again (fast
+     navigation), preventing ghost duplicates.
    ============================================================ */
 
 (function () {
@@ -17,6 +25,11 @@
   /* Vector piece set: chess.com's "neo" pieces (rounded style), served
      from chess.com's CDN as PNGs. Offline → glyph fallback via onerror. */
   const PIECE_IMG_BASE = "https://images.chesscomfiles.com/chess-themes/pieces/neo/150/";
+
+  /* Max squared distance for a "plausible slide" when the piece identity
+     is ambiguous. A knight jump is at most 2+2*... : |dr|<=2, |dc|<=1 → d<=5.
+     8 covers knight moves with margin; anything farther fades instead. */
+  const MAX_SLIDE_DIST_SQ = 8;
 
   /* Parse the board part of a FEN into a flat 64-array.
      Index 0 = a8, index 7 = h8, index 63 = h1 (row-major, white orientation).
@@ -44,6 +57,12 @@
     const f = FILES.indexOf(name[0]);
     const r = 8 - parseInt(name[1], 10);
     return r * 8 + f;
+  }
+
+  function distSq(a, b) {
+    const dr = Math.floor(a / 8) - Math.floor(b / 8);
+    const dc = (a % 8) - (b % 8);
+    return dr * dr + dc * dc;
   }
 
   /* Build a board. Returns { el, setBoard(board, marks), setFEN, setMarks, squares } */
@@ -80,9 +99,11 @@
 
     /* ---- Animated piece layer ----
        Pieces are absolutely-positioned elements ON the board, moved via
-       transform. A diff between consecutive boards slides them smoothly. */
+       transform. A diff between consecutive boards slides only the
+       pieces that actually moved. */
     let currentBoard = null;
-    let pool = [];   // { el, type, color, index }
+    let pool = [];     // live pieces: { el, type, color, index }
+    let zombies = [];  // fading-out pieces, recoverable: { el, type, color, index, timer }
     let marks = { sel: null, targets: [], last: [], hint: [] };
 
     function place(holder, index) {
@@ -122,47 +143,99 @@
       }
     }
 
+    /* Try to reuse a piece that is currently fading out (fast navigation) */
+    function reviveZombie(piece, index) {
+      let best = null, bestIdx = -1, bestDist = Infinity;
+      for (let k = 0; k < zombies.length; k++) {
+        const z = zombies[k];
+        if (z.type !== piece.type || z.color !== piece.color) continue;
+        const d = distSq(z.index, index);
+        if (d < bestDist) { bestDist = d; best = z; bestIdx = k; }
+      }
+      if (!best) return null;
+      zombies.splice(bestIdx, 1);
+      clearTimeout(best.timer);
+      best.el.classList.remove("exit");
+      best.index = index;
+      place(best.el, index);
+      best.el.style.zIndex = 4;
+      setTimeout(() => { best.el.style.zIndex = 3; }, 280);
+      return best;
+    }
+
+    function spawnPiece(piece, index) {
+      const holder = buildPieceHolder(piece);
+      holder.classList.add("enter");
+      place(holder, index);
+      el.appendChild(holder);
+      const entry = { el: holder, type: piece.type, color: piece.color, index: index };
+      requestAnimationFrame(() => requestAnimationFrame(() => holder.classList.remove("enter")));
+      return entry;
+    }
+
     function syncPieces(oldBoard, newBoard) {
       const remaining = pool.slice();
       pool = [];
+      const consumed = new Array(64).fill(false);
 
+      /* ---- Pass 1: same piece on the same square → keep perfectly still ---- */
       for (let i = 0; i < 64; i++) {
         const np = newBoard[i];
         if (!np) continue;
-
-        /* find the closest same-type-same-color piece to slide in */
-        let best = null, bestIdx = -1, bestDist = Infinity;
         for (let k = 0; k < remaining.length; k++) {
           const p = remaining[k];
-          if (p.type !== np.type || p.color !== np.color) continue;
-          const dr = Math.floor(p.index / 8) - Math.floor(i / 8);
-          const dc = (p.index % 8) - (i % 8);
-          const d = dr * dr + dc * dc;
-          if (d < bestDist) { bestDist = d; best = p; bestIdx = k; }
-        }
-
-        if (best) {
-          remaining.splice(bestIdx, 1);
-          best.index = i;
-          place(best.el, i);
-          best.el.style.zIndex = 4;   /* moving piece rides above others */
-          pool.push(best);
-        } else {
-          const holder = buildPieceHolder(np);
-          holder.classList.add("enter");
-          place(holder, i);
-          el.appendChild(holder);
-          const entry = { el: holder, type: np.type, color: np.color, index: i };
-          pool.push(entry);
-          requestAnimationFrame(() => requestAnimationFrame(() => holder.classList.remove("enter")));
+          if (p.index === i && p.type === np.type && p.color === np.color) {
+            remaining.splice(k, 1);
+            p.el.style.zIndex = 3;
+            pool.push(p);
+            consumed[i] = true;
+            break;
+          }
         }
       }
 
-      /* pieces that vanished (captures) fade out beneath the capturer */
+      /* ---- Pass 2: displaced pieces — slide only when it makes sense ---- */
+      for (let i = 0; i < 64; i++) {
+        if (consumed[i]) continue;
+        const np = newBoard[i];
+        if (!np) continue;
+
+        let best = null, bestIdx = -1, bestDist = Infinity, candidates = 0;
+        for (let k = 0; k < remaining.length; k++) {
+          const p = remaining[k];
+          if (p.type !== np.type || p.color !== np.color) continue;
+          candidates++;
+          const d = distSq(p.index, i);
+          if (d < bestDist) { bestDist = d; best = p; bestIdx = k; }
+        }
+
+        /* Slide only when unambiguous (one candidate → it must be the mover)
+           or when the distance is a plausible single-move distance. */
+        if (best && (candidates === 1 || bestDist <= MAX_SLIDE_DIST_SQ)) {
+          remaining.splice(bestIdx, 1);
+          best.index = i;
+          place(best.el, i);
+          best.el.style.zIndex = 4;
+          setTimeout(() => { best.el.style.zIndex = 3; }, 280);
+          pool.push(best);
+        } else {
+          /* No sensible animation → fade in a fresh (or revived) piece */
+          const revived = reviveZombie(np, i);
+          pool.push(revived || spawnPiece(np, i));
+        }
+      }
+
+      /* ---- Everything unmatched fades out (captures, disappearances) ---- */
       remaining.forEach((p) => {
-        p.el.style.zIndex = 2;
-        p.el.classList.add("exit");
-        setTimeout(() => p.el.remove(), 220);
+        const entry = p;
+        entry.el.style.zIndex = 2;
+        entry.el.classList.add("exit");
+        entry.timer = setTimeout(() => {
+          entry.el.remove();
+          const zi = zombies.indexOf(entry);
+          if (zi !== -1) zombies.splice(zi, 1);
+        }, 240);
+        zombies.push(entry);
       });
     }
 
