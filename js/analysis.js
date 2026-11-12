@@ -37,7 +37,7 @@
     { san: "1... e5", white: false, fen: "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", v: 0.3, grade: "book", note: "Black mirrors — the classical, principled reply." },
     { san: "2. Nf3",  white: true,  fen: "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", v: 0.4, grade: "book", note: "Development with tempo — the knight immediately attacks the e5 pawn." },
     { san: "2... d6", white: false, fen: "rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3", v: 0.4, grade: "book", note: "The Philidor Defence: solid, but passive — the light-squared bishop is about to get buried." },
-    { san: "3. d4",   white: true,  fen: "rnbqkbnr/ppp2ppp/3p4/4p3/3P4/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3", v: 0.5, grade: "book", note: "White strikes the center at once, challenging e5." },
+    { san: "3. d4",   white: true,  fen: "rnbqkbnr/ppp2ppp/3p4/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3", v: 0.5, grade: "book", note: "White strikes the center at once, challenging e5." },
     { san: "3... Bg4", white: false, fen: "rn1qkbnr/ppp2ppp/3p4/4p3/3PP1b1/5N2/PPP2PPP/RNBQKB1R w KQkq - 1 4", v: 0.4, grade: "ok", note: "The pin looks active but is actually passive: this bishop will never take part in Black's defence, while White builds a huge center." },
     { san: "4. dxe5", white: true,  fen: "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 4", v: 0.6, grade: "good", note: "Morphy grabs space — White now has two pawns in the center." },
     { san: "4... Bxf3", white: false, fen: "rn1qkbnr/ppp2ppp/3p4/4P3/4P3/5b2/PPP2PPP/RNBQKB1R w KQkq - 0 5", v: 0.5, grade: "ok", note: "Black trades his good bishop for the knight. A relief for White, whose remaining pieces get more room." },
